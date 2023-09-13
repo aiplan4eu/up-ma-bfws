@@ -53,13 +53,18 @@ class MA_BFWSsolver(Engine, OneshotPlannerMixin):
         return "MA_BFWS"
 
     def _get_cmd_ma(
-        self, problem: MultiAgentProblem, domain_filename: str, problem_filename: str, plan_filename: str, agents_json: json
+        self, problem: MultiAgentProblem, domain_filename: str, problem_filename: str, plan_filename: str, agents_json: json, timeout: str
     ):
         cmds = []
         directory = "ma_pddl_"
-        for ag in problem.agents:
-            base_command = f'{pkg_resources.resource_filename(__name__, ma_bfws_os[sys.platform])} -o {directory}{domain_filename}{ag.name}_domain.pddl -f {directory}{problem_filename}{ag.name}_problem.pddl -n 1 -multiagent_list {directory}{agents_json}{ag.name}.json -out {plan_filename}/{ag.name}_plan.txt -multiagent_number_agents {len(problem.agents)} -noout -cputime 300 -info_search 2'
-            cmds.append(base_command)
+        if timeout is None:
+            for ag in problem.agents:
+                base_command = f'{pkg_resources.resource_filename(__name__, ma_bfws_os[sys.platform])} -o {directory}{domain_filename}{ag.name}_domain.pddl -f {directory}{problem_filename}{ag.name}_problem.pddl -n 1 -multiagent_list {directory}{agents_json}{ag.name}.json -out {plan_filename}/{ag.name}_plan.txt -multiagent_number_agents {len(problem.agents)} -noout -cputime 12000 -info_search 2'
+                cmds.append(base_command)
+        else:
+            for ag in problem.agents:
+                base_command = f'{pkg_resources.resource_filename(__name__, ma_bfws_os[sys.platform])} -o {directory}{domain_filename}{ag.name}_domain.pddl -f {directory}{problem_filename}{ag.name}_problem.pddl -n 1 -multiagent_list {directory}{agents_json}{ag.name}.json -out {plan_filename}/{ag.name}_plan.txt -multiagent_number_agents {len(problem.agents)} -noout -cputime {timeout} -info_search 2'
+                cmds.append(base_command)
         return cmds
 
     def _result_status(
@@ -114,7 +119,6 @@ class MA_BFWSsolver(Engine, OneshotPlannerMixin):
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             result = sock.connect_ex((ip, port))
             sock.close()
-
             if result != 0:
                 return port
 
@@ -126,14 +130,13 @@ class MA_BFWSsolver(Engine, OneshotPlannerMixin):
         n_port_max = 65535
         outdir_json = "ma_pddl_" + json_dir
         os.makedirs(outdir_json, exist_ok=True)
-
         for agent in problem.agents:
             self_name = agent.name
             self_port = self.get_free_port(ip, n_port_min, n_port_max)
             agent_ports[self_name] = self_port
             assigned_ports.add(self_port)
 
-        for i, ag in enumerate(problem.agents):
+        for ag in problem.agents:
             others = {}
             for other_ag in problem.agents:
                 if other_ag.name != ag.name:
@@ -181,9 +184,9 @@ class MA_BFWSsolver(Engine, OneshotPlannerMixin):
             self.write_json(problem, json_filename)
             w.write_ma_domain(domain_filename)
             w.write_ma_problem(problem_filename)
-            cmds = self._get_cmd_ma(problem, domain_filename, problem_filename, plan_filename, json_filename)
+            cmds = self._get_cmd_ma(problem, domain_filename, problem_filename, plan_filename, json_filename, timeout)
             loop = asyncio.get_event_loop()
-            execs_res = loop.run_until_complete(self.exec_cmds(cmds, timeout))
+            execs_res = loop.run_until_complete(self.exec_cmds(cmds, output_stream))
             for cmd in cmds:
                 plan_filename = cmd.split('-out ')[1].split(' ')[0]
                 log_filename = f'{plan_filename}.log'
@@ -274,20 +277,19 @@ class MA_BFWSsolver(Engine, OneshotPlannerMixin):
         
     async def exec_async_cmd(self, cmd, output_stream):
         file_log = cmd.split('-out ')[1].split(' ')[0]
-        if output_stream
-        new_out = open(f'{file_log}.log', 'a')
+        if output_stream is None:
+            output_stream = open(f'{file_log}.log', 'a')
         process = await asyncio.create_subprocess_shell(
             cmd,
-            stdout=new_out,
+            stdout=output_stream,
         )
         try:
-            await asyncio.sleep(1)
             timeout_occurred = False
         except asyncio.TimeoutExpired:
             timeout_occurred = True
         await process.wait()
         return process.returncode, timeout_occurred
 
-    async def exec_cmds(self, cmds, timeout):
-        tasks = [asyncio.create_task(self.exec_async_cmd(comando, timeout)) for comando in cmds]
+    async def exec_cmds(self, cmds, output_stream):
+        tasks = [asyncio.create_task(self.exec_async_cmd(comando, output_stream)) for comando in cmds]
         return await asyncio.gather(*tasks)
