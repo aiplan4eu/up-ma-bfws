@@ -1,0 +1,9 @@
+README.md
+setup.py
+up_ma_bfws/__init__.py
+up_ma_bfws/maBFWS
+up_ma_bfws/ma_bfws_planner.py
+up_ma_bfws.egg-info/PKG-INFO
+up_ma_bfws.egg-info/SOURCES.txt
+up_ma_bfws.egg-info/dependency_links.txt
+up_ma_bfws.egg-info/top_level.txt
