@@ -22,7 +22,7 @@ from unified_planning.model.multi_agent import MultiAgentProblem  # type: ignore
 import re
 
 credits = Credits(
-    #Check and set ("name", "author" , "contact (for UP integration)", "website", "license", "short_description")
+    # Check and set ("name", "author" , "contact (for UP integration)", "website", "license", "short_description")
     "MA-BFWS",
     "Alfonso E. Gerevini, Nir Lipovetzky, Francesco Percassi, Alessandro Saetti and Ivan Serina",
     "ivan.serina@unibs.it",
@@ -32,12 +32,11 @@ credits = Credits(
     "...",
 )
 
-env = up.environment.get_environment()
-
 ma_bfws_os = {
-                # 'win32':'maBFWS',
-                'linux': 'maBFWS'
-              }
+    # 'win32':'maBFWS',
+    "linux": "maBFWS"
+}
+
 
 class MA_BFWSsolver(Engine, OneshotPlannerMixin):
     def __init__(
@@ -53,17 +52,23 @@ class MA_BFWSsolver(Engine, OneshotPlannerMixin):
         return "MA_BFWS"
 
     def _get_cmd_ma(
-        self, problem: MultiAgentProblem, domain_filename: str, problem_filename: str, plan_filename: str, agents_json: json, timeout: str
+        self,
+        problem: MultiAgentProblem,
+        domain_filename: str,
+        problem_filename: str,
+        plan_filename: str,
+        agents_json: json,
+        timeout: str,
     ):
         cmds = []
         directory = "ma_pddl_"
         if timeout is None:
             for ag in problem.agents:
-                base_command = f'{pkg_resources.resource_filename(__name__, ma_bfws_os[sys.platform])} -o {directory}{domain_filename}{ag.name}_domain.pddl -f {directory}{problem_filename}{ag.name}_problem.pddl -n 1 -multiagent_list {directory}{agents_json}{ag.name}.json -out {plan_filename}/{ag.name}_plan.txt -multiagent_number_agents {len(problem.agents)} -noout -cputime 12000 -info_search 2'
+                base_command = f"{pkg_resources.resource_filename(__name__, ma_bfws_os[sys.platform])} -o {directory}{domain_filename}{ag.name}_domain.pddl -f {directory}{problem_filename}{ag.name}_problem.pddl -n 1 -multiagent_list {directory}{agents_json}{ag.name}.json -out {plan_filename}/{ag.name}_plan.txt -multiagent_number_agents {len(problem.agents)} -noout -cputime 12000 -info_search 2"
                 cmds.append(base_command)
         else:
             for ag in problem.agents:
-                base_command = f'{pkg_resources.resource_filename(__name__, ma_bfws_os[sys.platform])} -o {directory}{domain_filename}{ag.name}_domain.pddl -f {directory}{problem_filename}{ag.name}_problem.pddl -n 1 -multiagent_list {directory}{agents_json}{ag.name}.json -out {plan_filename}/{ag.name}_plan.txt -multiagent_number_agents {len(problem.agents)} -noout -cputime {timeout} -info_search 2'
+                base_command = f"{pkg_resources.resource_filename(__name__, ma_bfws_os[sys.platform])} -o {directory}{domain_filename}{ag.name}_domain.pddl -f {directory}{problem_filename}{ag.name}_problem.pddl -n 1 -multiagent_list {directory}{agents_json}{ag.name}.json -out {plan_filename}/{ag.name}_plan.txt -multiagent_number_agents {len(problem.agents)} -noout -cputime {timeout} -info_search 2"
                 cmds.append(base_command)
         return cmds
 
@@ -86,23 +91,31 @@ class MA_BFWSsolver(Engine, OneshotPlannerMixin):
         """See unified_planning.model.problem_kind.py for more options """
         supported_kind = ProblemKind()
         supported_kind.set_problem_class("ACTION_BASED_MULTI_AGENT")
-        supported_kind.set_numbers('CONTINUOUS_NUMBERS')  # type: ignore
-        supported_kind.set_problem_type('SIMPLE_NUMERIC_PLANNING')  # type: ignore
+        supported_kind.set_numbers("CONTINUOUS_NUMBERS")  # type: ignore
+        supported_kind.set_problem_type("SIMPLE_NUMERIC_PLANNING")  # type: ignore
         supported_kind.set_problem_type("GENERAL_NUMERIC_PLANNING")  # type: ignore
-        supported_kind.set_typing('FLAT_TYPING')  # type: ignore
-        supported_kind.set_typing('HIERARCHICAL_TYPING')  # type: ignore
-        supported_kind.set_fluents_type('NUMERIC_FLUENTS')  # type: ignore
-        supported_kind.set_conditions_kind('EQUALITIES')  # type: ignore
-        supported_kind.set_numbers('DISCRETE_NUMBERS')  # type: ignore
-        supported_kind.set_effects_kind('INCREASE_EFFECTS')  # type: ignore
-        supported_kind.set_effects_kind('DECREASE_EFFECTS')  # type: ignore
-        supported_kind.set_effects_kind('STATIC_FLUENTS_IN_NUMERIC_ASSIGNMENTS')  # type: ignore
-        supported_kind.set_effects_kind('FLUENTS_IN_NUMERIC_ASSIGNMENTS')  # type: ignore
-        supported_kind.set_time('CONTINUOUS_TIME')  # type: ignore
-        supported_kind.set_quality_metrics('PLAN_LENGTH') # type: ignore
-        supported_kind.set_expression_duration('STATIC_FLUENTS_IN_DURATIONS')  # type: ignore
-        supported_kind.set_actions_cost_kind('STATIC_FLUENTS_IN_ACTIONS_COST')  # type: ignore
-        supported_kind.set_actions_cost_kind('FLUENTS_IN_ACTIONS_COST')  # type: ignore
+        supported_kind.set_typing("FLAT_TYPING")  # type: ignore
+        supported_kind.set_typing("HIERARCHICAL_TYPING")  # type: ignore
+        supported_kind.set_fluents_type("NUMERIC_FLUENTS")  # type: ignore
+        supported_kind.set_conditions_kind("EQUALITIES")  # type: ignore
+        supported_kind.set_numbers("DISCRETE_NUMBERS")  # type: ignore
+        supported_kind.set_effects_kind("INCREASE_EFFECTS")  # type: ignore
+        supported_kind.set_effects_kind("DECREASE_EFFECTS")  # type: ignore
+        supported_kind.set_effects_kind(
+            "STATIC_FLUENTS_IN_NUMERIC_ASSIGNMENTS"
+        )  # type: ignore
+        supported_kind.set_effects_kind(
+            "FLUENTS_IN_NUMERIC_ASSIGNMENTS"
+        )  # type: ignore
+        supported_kind.set_time("CONTINUOUS_TIME")  # type: ignore
+        supported_kind.set_quality_metrics("PLAN_LENGTH")  # type: ignore
+        supported_kind.set_expression_duration(
+            "STATIC_FLUENTS_IN_DURATIONS"
+        )  # type: ignore
+        supported_kind.set_actions_cost_kind(
+            "STATIC_FLUENTS_IN_ACTIONS_COST"
+        )  # type: ignore
+        supported_kind.set_actions_cost_kind("FLUENTS_IN_ACTIONS_COST")  # type: ignore
         return supported_kind
 
     @staticmethod
@@ -144,15 +157,15 @@ class MA_BFWSsolver(Engine, OneshotPlannerMixin):
                     others[other_ag.name] = {
                         "communicate_to": [],
                         "communicate_from": [],
-                        "address": f"tcp://{ip}:{other_port}"
+                        "address": f"tcp://{ip}:{other_port}",
                     }
 
             agent_json = {
                 "self": {
                     "name": ag.name,
-                    "address": f"tcp://{ip}:{agent_ports[ag.name]}"
+                    "address": f"tcp://{ip}:{agent_ports[ag.name]}",
                 },
-                "others": others
+                "others": others,
             }
 
             filename = f"ma_pddl_{json_dir}{ag.name}.json"
@@ -184,13 +197,20 @@ class MA_BFWSsolver(Engine, OneshotPlannerMixin):
             self.write_json(problem, json_filename)
             w.write_ma_domain(domain_filename)
             w.write_ma_problem(problem_filename)
-            cmds = self._get_cmd_ma(problem, domain_filename, problem_filename, plan_filename, json_filename, timeout)
+            cmds = self._get_cmd_ma(
+                problem,
+                domain_filename,
+                problem_filename,
+                plan_filename,
+                json_filename,
+                timeout,
+            )
             loop = asyncio.get_event_loop()
             execs_res = loop.run_until_complete(self.exec_cmds(cmds, output_stream))
             for cmd in cmds:
-                plan_filename = cmd.split('-out ')[1].split(' ')[0]
-                log_filename = f'{plan_filename}.log'
-                log_file = open(log_filename, 'r')
+                plan_filename = cmd.split("-out ")[1].split(" ")[0]
+                log_filename = f"{plan_filename}.log"
+                log_file = open(log_filename, "r")
                 logs.append(log_file.read())
                 log_file.close()
             for res in execs_res:
@@ -203,11 +223,11 @@ class MA_BFWSsolver(Engine, OneshotPlannerMixin):
                     )
             plans = dict()
             for cmd in cmds:
-                plan_filename = cmd.split('-out ')[1].split(' ')[0]
-                plans.update(self._plan_from_file(
-                        problem, plan_filename, w.get_item_named
-                    ))
-                
+                plan_filename = cmd.split("-out ")[1].split(" ")[0]
+                plans.update(
+                    self._plan_from_file(problem, plan_filename, w.get_item_named)
+                )
+
             if plans[-1]:
                 type_of_plan = up.plans.TimeTriggeredPlan
             else:
@@ -224,31 +244,40 @@ class MA_BFWSsolver(Engine, OneshotPlannerMixin):
                 status, plan, log_messages=logs, engine_name=self.name
             )
 
-    def _plan_from_file(self, problem: 'up.model.Problem', plan_filename: str, get_item_named: Callable[[str],
+    def _plan_from_file(
+        self,
+        problem: "up.model.Problem",
+        plan_filename: str,
+        get_item_named: Callable[
+            [str],
             Union[
-                'up.model.Type',
-                'up.model.Action',
-                'up.model.Fluent',
-                'up.model.Object',
-                'up.model.Parameter',
-                'up.model.Variable',
+                "up.model.Type",
+                "up.model.Action",
+                "up.model.Fluent",
+                "up.model.Object",
+                "up.model.Parameter",
+                "up.model.Variable",
             ],
-        ],) -> 'up.plans.Plan':
-        '''Takes a problem and a filename and returns the plan parsed from the file.'''
+        ],
+    ) -> "up.plans.Plan":
+        """Takes a problem and a filename and returns the plan parsed from the file."""
         actions = []
         tt = False
         ordered_actions = dict()
         ordered_actions[-1] = False
-        if 'CONTINUOUS_TIME' in problem.kind.features:
+        if "CONTINUOUS_TIME" in problem.kind.features:
             tt = True
             ordered_actions[-1] = True
         with open(plan_filename) as plan:
             for line in plan.readlines():
-                if re.match(r'^\s*(;.*)?$', line):
+                if re.match(r"^\s*(;.*)?$", line):
                     continue
-                res = re.match(r'^[\s[\d.]+:\s*\(\s*([\w?-]+)((\s+[\w?-]+)*)\s*\)\s*$', line.lower().split(' ;;')[0])
+                res = re.match(
+                    r"^[\s[\d.]+:\s*\(\s*([\w?-]+)((\s+[\w?-]+)*)\s*\)\s*$",
+                    line.lower().split(" ;;")[0],
+                )
                 if res:
-                    number_action = res.group(0).split(':')[0].replace(' ','')
+                    number_action = res.group(0).split(":")[0].replace(" ", "")
                     action = get_item_named(res.group(1))
                     parameters = []
                     for p in res.group(2).split():
@@ -256,33 +285,49 @@ class MA_BFWSsolver(Engine, OneshotPlannerMixin):
                         if isinstance(p_correct, up.model.multi_agent.agent.Agent):
                             agent = p_correct
                         else:
-                            parameters.append(problem.environment.expression_manager.ObjectExp(p_correct))
+                            parameters.append(
+                                problem.environment.expression_manager.ObjectExp(
+                                    p_correct
+                                )
+                            )
                     if tt:
-                        start = re.match(r'^([\d.]+):', line).group(1)
-                        dur = re.match(r'^[\d.]+:\s*\(\s*[\w?-]+((\s+[\w?-]+)*)\s*\)\s*\[([\d.]+)\]$', line).group(3)                                                                                               
-                        actions.append((start,up.plans.ActionInstance(action, tuple(parameters)),dur))
-                        ordered_actions[int(number_action)] = (start,up.plans.ActionInstance(action, tuple(parameters)),dur)
-                    else:
-                        actions.append(  up.plans.ActionInstance(
-                                        action, tuple(parameters), agent
-                        ))
-                        ordered_actions[int(number_action)] = up.plans.ActionInstance(
-                                        action, tuple(parameters), agent
+                        start = re.match(r"^([\d.]+):", line).group(1)
+                        dur = re.match(
+                            r"^[\d.]+:\s*\(\s*[\w?-]+((\s+[\w?-]+)*)\s*\)\s*\[([\d.]+)\]$",
+                            line,
+                        ).group(3)
+                        actions.append(
+                            (
+                                start,
+                                up.plans.ActionInstance(action, tuple(parameters)),
+                                dur,
+                            )
                         )
-                elif re.match(r'no solution', line):
+                        ordered_actions[int(number_action)] = (
+                            start,
+                            up.plans.ActionInstance(action, tuple(parameters)),
+                            dur,
+                        )
+                    else:
+                        actions.append(
+                            up.plans.ActionInstance(action, tuple(parameters), agent)
+                        )
+                        ordered_actions[int(number_action)] = up.plans.ActionInstance(
+                            action, tuple(parameters), agent
+                        )
+                elif re.match(r"no solution", line):
                     return None
                 else:
-                    raise UPException('Error parsing plan generated by ' + self.__class__.__name__)
-        return ordered_actions       
-        
+                    raise UPException(
+                        "Error parsing plan generated by " + self.__class__.__name__
+                    )
+        return ordered_actions
+
     async def exec_async_cmd(self, cmd, output_stream):
-        file_log = cmd.split('-out ')[1].split(' ')[0]
+        file_log = cmd.split("-out ")[1].split(" ")[0]
         if output_stream is None:
-            output_stream = open(f'{file_log}.log', 'a')
-        process = await asyncio.create_subprocess_shell(
-            cmd,
-            stdout=output_stream,
-        )
+            output_stream = open(f"{file_log}.log", "a")
+        process = await asyncio.create_subprocess_shell(cmd, stdout=output_stream)
         try:
             timeout_occurred = False
         except asyncio.TimeoutExpired:
@@ -291,5 +336,8 @@ class MA_BFWSsolver(Engine, OneshotPlannerMixin):
         return process.returncode, timeout_occurred
 
     async def exec_cmds(self, cmds, output_stream):
-        tasks = [asyncio.create_task(self.exec_async_cmd(comando, output_stream)) for comando in cmds]
+        tasks = [
+            asyncio.create_task(self.exec_async_cmd(comando, output_stream))
+            for comando in cmds
+        ]
         return await asyncio.gather(*tasks)
