@@ -46,11 +46,6 @@ jobs:
             name: linux-wheel
             path: dist
 
-        - uses: actions/download-artifact@master
-          with:
-            name: windows-wheels
-            path: dist
-
         - run: ls dist
 
         - name: Upload to PyPI
