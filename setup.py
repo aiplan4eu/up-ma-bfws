@@ -3,7 +3,8 @@ import subprocess
 import platform
 from setuptools import setup, Distribution
 
-long_description = """============================================================
+long_description = \
+"""============================================================
     UP_MA_BFWS
  ============================================================
 """
