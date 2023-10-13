@@ -39,12 +39,12 @@ class BinaryDistribution(Distribution):
 
 setup(
     name="up_ma_bfws",
-    version="0.0.3",
+    version="0.0.4",
     description="up_ma_bfws",
     long_description=long_description,
     long_description_content_type ="text/markdown",
     author='UNIBS Team',
-    author_email="ivan.serina@unibs.it",
+    author_email="alberto.rovetta@unibs.it",
     packages=["up_ma_bfws"],
     package_data={"up_ma_bfws": [executable]},
     distclass=BinaryDistribution,
