@@ -29,8 +29,7 @@ jobs:
         - name: Checkout repo
           uses: actions/checkout@master
           with:
-          ls
-            fetch-depth: 0
+          ls  fetch-depth: 0
 
         - name: Set up Python 3.7
           uses: actions/setup-python@v1
@@ -44,7 +43,6 @@ jobs:
 
         - uses: actions/download-artifact@master
           with:ls
-
             name: linux-wheel
             path: dist
 
