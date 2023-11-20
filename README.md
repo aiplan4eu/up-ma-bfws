@@ -59,7 +59,7 @@ else:
 Multi-agent planning
 
 ## ma-BFWS Team
-Current members: Alfonso E. Gerevini , Nir Lipovetzky, Alessandro Saetti and Ivan Serina
+Current members: Alfonso E. Gerevini, Nir Lipovetzky, Alessandro Saetti and Ivan Serina
 
 Planning group coordinator: Alfonso E. Gerevini
 
