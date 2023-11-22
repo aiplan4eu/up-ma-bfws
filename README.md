@@ -43,7 +43,7 @@ You can for example call it as follows:
 from unified_planning.shortcuts import *
 from unified_planning.engines import PlanGenerationResultStatus
 
-problem = Problem('myproblem')
+problem = MultiAgentProblem('myproblem')
 # specify the problem (e.g. fluents, initial state, actions, goal)
 ...
 
